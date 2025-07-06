@@ -1,0 +1,41 @@
+#drop-area {
+    border: 2px dashed #aaa;
+    padding: 20px;
+    width: 60vw;
+    text-align: center;
+    margin: 0 auto 10px; 
+    cursor: pointer;
+    min-height: 220px;
+    background-size: auto 200px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+#image {
+    display: none;
+}
+
+#resultImage{
+    position: relative;
+    display: block;
+    width: 60vw;
+    margin: 0 auto;
+}
+
+
+
+.but{
+    position: relative;
+    width: 60vw;
+    left: 20vw;
+    height: 40px;
+
+    background: #f0f0f0;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.but:hover{
+    background: #e0e0e0;
+}

@@ -1,0 +1,45 @@
+#drop-area {
+    border: 2px dashed #aaa;
+    padding: 20px;
+    width: 60vw;
+    text-align: center;
+    margin: 0 auto 10px; 
+    cursor: pointer;
+    min-height: 120px;
+    background-color: #fafafa;
+    transition: border-color 0.3s;
+}
+
+#pdf {
+    display: none;
+}
+
+#filename {
+    text-align: center;
+    font-size: 1rem;
+    color: #333;
+}
+
+
+
+.but {
+    position: relative;
+    width: 60vw;
+    left: 20vw;
+    height: 40px;
+    display: block;
+    background: #f0f0f0;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.but:hover {
+    background: #e0e0e0;
+
+}
+
+.hidden{
+    visibility: hidden;
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>转换器</title>
+    <link rel="stylesheet" href="./style/transformation.css">
+    <link rel="stylesheet" href="./style/navi.css">
+</head>
+<body>
+    <div id="navi">
+        <a href="/" class="nav">API文档</a>
+        <a href="/transformation" class="nav">转换器</a>
+        <a href="/image" class="nav">图像转换</a>
+        <a href="/pdf" class="nav">PDF转换</a>
+        
+
+    </div>
+    <div id="trans">
+        <textarea type="text" id="inputbox"></textarea>
+        <div id="outputbox"></div>
+        <div id="transbut" class="but">MyGO!</div>
+        <div id="switch" class="but">简体转繁体</div>
+    </div>
+    <script>
+        var chinese = 1;
+        document.getElementById("switch").addEventListener("click",function(){
+            chinese = 1 - chinese;
+            document.getElementById("switch").innerText = chinese ? "简体转繁体" : "繁体转简体";
+        });
+        document.getElementById("transbut").addEventListener("click",async function () {
+            const current = chinese;
+            const input = document.getElementById("inputbox").value;
+            const data = {
+                "input": input,
+                "ch": current,
+            };
+            console.log(input);
+            const back = await fetch('/api/transform', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const text = await back.text();
+            document.getElementById("outputbox").innerText = text;
+        })
+    
+    </script>
+</body>
+</html>

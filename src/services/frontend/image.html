@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图像转换</title>
+    <link rel="stylesheet" href="./style/image.css">
+    <link rel="stylesheet" href="./style/navi.css">
+
+</head>
+<body>
+    <div id="navi">
+        <a href="/" class="nav">API文档</a>
+        <a href="/transformation" class="nav">转换器</a>
+        <a href="/image" class="nav">图像转换</a>
+        <a href="/pdf" class="nav">PDF转换</a>
+    </div>
+    <div id="switch" class="but">图片是繁体</div>
+    <div id="transbut" class="but">MyGO!</div>
+    <div id="drop-area">
+        拖拽图片到此处，或点击选择文件
+        <input type="file" id="image" accept="image/*">
+    </div>
+
+    <img id="resultImage">
+
+    <script>
+        const dropArea = document.getElementById('drop-area');
+        const fileInput = document.getElementById('image');
+
+        dropArea.addEventListener('click', () => fileInput.click());
+
+        dropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropArea.style.borderColor = '#333';
+        });
+
+        dropArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropArea.style.borderColor = '#aaa';
+        });
+
+        dropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropArea.style.borderColor = '#aaa';
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                showPreview(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', function() {
+            showPreview(this.files[0]);
+        });
+
+        function showPreview(file) {
+            if (!file || !file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                dropArea.style.backgroundImage = `url('${e.target.result}')`;
+                dropArea.style.backgroundSize = 'contain';
+                dropArea.style.backgroundRepeat = 'no-repeat';
+                dropArea.style.backgroundPosition = 'center';
+                dropArea.innerHTML = "";
+                dropArea.appendChild(fileInput);
+            };
+            reader.readAsDataURL(file);
+        }
+        var chinese = 1;
+        document.getElementById("switch").addEventListener("click",function(){
+            chinese = 1 - chinese;
+            document.getElementById("switch").innerText = chinese ? "图片是繁体" : "图片是简体";
+        });
+        document.getElementById("transbut").addEventListener("click",async function () {
+            console.log("GO")
+            const current = chinese;
+            const input = document.getElementById("image");
+            document.getElementById("resultImage").alt = "转换中"
+            if (!input.files || input.files.length === 0) {
+                alert("请先选择图片文件！");
+                return;
+            }
+            const file = input.files[0];
+            const formData = new FormData();
+            formData.append("image",file);
+            formData.append("number",current);
+            const res = await fetch("/api/image", {
+                method: "POST",
+                body: formData
+            });
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            document.getElementById("resultImage").src = url;
+            document.getElementById("resultImage").alt = "转换完成"
+
+        })
+    </script>
+</body>
+</html>

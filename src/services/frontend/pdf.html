@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PDF 转换</title>
+  <link rel="stylesheet" href="./style/pdf.css">
+  <link rel="stylesheet" href="./style/navi.css">
+</head>
+<body>
+  <div id="navi">
+    <a href="/" class="nav">API文档</a>
+    <a href="/transformation" class="nav">转换器</a>
+    <a href="/image" class="nav">图像转换</a>
+    <a href="/pdf" class="nav">PDF转换</a>
+  </div>
+
+
+  <div id="drop-area">
+    拖拽 PDF 到此处，或点击选择文件
+    <input type="file" id="pdf" accept="application/pdf">
+  </div>
+
+  <div id="filename" style="margin-top: 10px; font-weight: bold;"></div>
+  <div id="switch" class="but">PDF是繁体</div>
+  <div id="transbut" class="but">上传并转换 PDF</div>
+  <a id="downloadLink" class="hidden" download="converted.pdf">下载转换后的 PDF</a>
+
+  <script>
+    const dropArea = document.getElementById('drop-area');
+    const fileInput = document.getElementById('pdf');
+    const fileNameDisplay = document.getElementById('filename');
+    const downloadLink = document.getElementById('downloadLink');
+
+    dropArea.addEventListener('click', () => fileInput.click());
+    dropArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropArea.style.borderColor = '#333';
+    });
+
+    dropArea.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      dropArea.style.borderColor = '#aaa';
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropArea.style.borderColor = '#aaa';
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        fileInput.files = e.dataTransfer.files;
+        showPDFName(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', function () {
+      showPDFName(this.files[0]);
+    });
+
+    function showPDFName(file) {
+      if (!file || file.type !== "application/pdf") {
+        alert("请选择一个 PDF 文件！");
+        return;
+      }
+      fileNameDisplay.textContent = `已选择文件：${file.name}`;
+    }
+    let chinese = 1;
+    document.getElementById("switch").addEventListener("click", function () {
+      chinese = 1 - chinese;
+      this.innerText = chinese ? "PDF是繁体" : "PDF是简体";
+    });
+
+    document.getElementById("transbut").addEventListener("click", async function () {
+      downloadLink.className = "hidden";
+      const file = fileInput.files[0];
+      if (!file || file.type !== "application/pdf") {
+        alert("请先选择一个 PDF 文件！");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("pdf", file);
+      formData.append("number", chinese);
+
+      const res = await fetch("/api/pdf", {
+        method: "POST",
+        body: formData
+      });
+
+      if (!res.ok) {
+        alert("转换失败！");
+        return;
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      
+      downloadLink.href = url;
+      downloadLink.style.display = 'inline-block';
+      downloadLink.textContent = '下载转换后的 PDF';
+      downloadLink.className = 'but';
+    });
+  </script>
+</body>
+</html>

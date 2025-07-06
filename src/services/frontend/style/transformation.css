@@ -1,0 +1,65 @@
+
+
+#trans{
+    position: relative;
+    width: 60vw;
+    left: 20vw;
+    height:50vh;
+}
+
+#inputbox{
+    position: absolute;
+    width: 48%;
+    height: 50vh;
+    left: 0;
+    top: 10px;
+    resize: none;
+    box-sizing: border-box;
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+}
+
+#outputbox{
+    position: absolute;
+    width: 48%;
+    right: 0;
+    height: 50vh;
+    top: 10px;
+    border: black 1px solid;
+}
+
+#transbut{
+
+    left: 0;
+    top: 55vh;
+}
+
+#switch{
+    top: 55vh;
+    right: 0;
+
+}
+
+
+#switch{
+
+    top: 55vh;
+    right: 0;
+
+}
+
+.but{
+    position: absolute;
+    width: 48%;
+    height: 40px;
+    background: #f0f0f0;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.but:hover{
+    background: #e0e0e0;
+}

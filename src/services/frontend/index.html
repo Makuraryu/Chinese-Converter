@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主页</title>
+    <link rel="stylesheet" href="./style/navi.css">
+    <link rel="stylesheet" href="./style/index.css">
+</head>
+<body>
+    <div id="navi">
+        <a href="/" class="nav">API文档</a>
+        <a href="/transformation" class="nav">转换器</a>
+        <a href="/image" class="nav">图像转换</a>
+        <a href="/pdf" class="nav">PDF转换</a>
+
+    </div>
+
+    <div id="api">
+        <h1>API 文档</h1>
+        <p>本服务提供中文简繁体转换的三类接口：文本、图像和 PDF。所有请求均为 <code>POST</code>，支持使用 JSON 或表单提交。</p>
+
+        <h2>通用说明</h2>
+        <ul>
+            <li>所有接口均为 <code>POST</code> 请求</li>
+            <li>接口路径统一以 <code>/api</code> 开头</li>
+            <li>图像和 PDF 接口使用 <code>multipart/form-data</code> 提交，文本接口使用 <code>application/json</code></li>
+            <li>参数 <code>ch</code> 或 <code>number</code> 控制简繁体转换方向：
+            <ul>
+                <li><code>0</code>：将简体转换为繁体</li>
+                <li><code>1</code>：将繁体转换为简体</li>
+            </ul>
+            </li>
+        </ul>
+
+        <h2>/api/transform</h2>
+        <h3>功能说明</h3>
+        <p>对输入的中文文本进行简繁体转换。</p>
+
+        <h3>请求类型</h3>
+        <p><code>POST</code>（<code>application/json</code>）</p>
+
+        <h3>请求参数</h3>
+        <table border="1">
+            <tr><th>参数名</th><th>类型</th><th>是否必须</th><th>描述</th></tr>
+            <tr><td>input</td><td>string</td><td>是</td><td>待转换的中文文本</td></tr>
+            <tr><td>ch</td><td>int</td><td>是</td><td>0 为转繁体，1 为转简体</td></tr>
+        </table>
+
+        <h3>请求示例</h3>
+        <pre>
+        {
+        "input": "這是一段繁體字。",
+        "ch": 1
+        }
+        </pre>
+
+        <h3>响应示例</h3>
+        <pre>这是一段繁体字。</pre>
+
+        <h2>/api/image</h2>
+        <h3>功能说明</h3>
+        <p>识别上传图像中的中文文字，并进行简繁体替换，返回处理后的图像。</p>
+
+        <h3>请求类型</h3>
+        <p><code>POST</code>（<code>multipart/form-data</code>）</p>
+
+        <h3>请求参数</h3>
+        <table border="1">
+            <tr><th>参数名</th><th>类型</th><th>是否必须</th><th>描述</th></tr>
+            <tr><td>image</td><td>file</td><td>是</td><td>上传的图片文件（如 PNG 或 JPEG）</td></tr>
+            <tr><td>number</td><td>int</td><td>否</td><td>图中文字类型：0 表示简体，转换为繁体；1 表示繁体，转换为简体；默认 0</td></tr>
+        </table>
+
+        <h3>curl 示例</h3>
+        <pre>
+        curl -X POST http://yourserver/api/image \
+        -F "image=@example.png" \
+        -F "number=0"
+        </pre>
+
+        <h3>响应</h3>
+        <p>处理后的图像，<code>Content-Type: image/png</code></p>
+
+        <h2>/api/pdf</h2>
+        <h3>功能说明</h3>
+        <p>识别上传 PDF 中的中文文字，并进行简繁体替换，返回处理后的 PDF。</p>
+
+        <h3>请求类型</h3>
+        <p><code>POST</code>（<code>multipart/form-data</code>）</p>
+
+        <h3>请求参数</h3>
+        <table border="1">
+            <tr><th>参数名</th><th>类型</th><th>是否必须</th><th>描述</th></tr>
+            <tr><td>pdf</td><td>file</td><td>是</td><td>上传的 PDF 文件</td></tr>
+            <tr><td>number</td><td>int</td><td>否</td><td>PDF 中文字类型：0 表示简体，1 表示繁体，默认 0</td></tr>
+        </table>
+
+        <h3>curl 示例</h3>
+        <pre>
+        curl -X POST http://yourserver/api/pdf \
+        -F "pdf=@document.pdf" \
+        -F "number=1"
+        </pre>
+
+        <h3>响应</h3>
+        <p>处理后的 PDF 文件，<code>Content-Type: application/pdf</code></p>
+
+        <h2>错误响应说明</h2>
+        <table border="1">
+            <tr><th>状态码</th><th>错误情况</th><th>响应内容</th></tr>
+            <tr><td>400</td><td>缺少文件参数</td><td>"Missing image" 或 "Missing pdf"</td></tr>
+        </table>
+
+        <h2>简繁体转换逻辑</h2>
+        <table border="1">
+            <tr><th>参数值</th><th>表示当前内容类型</th><th>将转换为</th></tr>
+            <tr><td>0</td><td>简体中文</td><td>繁体中文</td></tr>
+            <tr><td>1</td><td>繁体中文</td><td>简体中文</td></tr>
+        </table>
+    </div>
+
+</body>
+</html>
